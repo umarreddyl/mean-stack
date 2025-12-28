@@ -1,0 +1,110 @@
+Angular Project Doc
+
+Part-1 
+
+
+Check Versions:
+
+node -v
+npm -v
+
+ng version //angular version check
+
+installation of angular:
+
+npm install -g @angular/cli@8
+
+Creating Angular Project
+
+ng new community-app
+
+ng new community-app
+? Would you like to add Angular routing? Yes
+? Which stylesheet format would you like to use? CSS
+
+cd community-app
+
+install Dependencies Safely:
+
+npm install --legacy-peer-deps //instructing it to use older compatible versions
+
+fix:
+
+$env:NODE_OPTIONS="--openssl-legacy-provider"
+
+Run Angular:
+
+ng serve
+
+
+Part-2 :Routing Configuration
+
+App components location:(what angular runs) OPEN IT
+
+src/app/app-routing.module.ts 
+
+
+Replace with: and save
+
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+
+import { PplListComponent } from './ppl-list/ppl-list.component';
+import { PersonEditComponent } from './person-edit/person-edit.component';
+import { PersonDeleteComponent } from './person-delete/person-delete.component';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    PplListComponent,
+    PersonEditComponent,
+    PersonDeleteComponent
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+HTML LOCATION : OPEN IT
+
+src/app/app.component.html
+
+replace it with:
+
+<h2>People Management App</h2>
+<hr />
+<router-outlet></router-outlet>
+
+
+open these html files of each component and replace with these:
+
+ppl-list.component.html
+
+<p>People List View</p>
+
+
+person-edit.component.html
+
+<p>Edit Person View</p>
+
+
+person-delete.component.html
+
+<p>Delete Person View</p>
+
+
+AND RUN ng serve
+
+
+Part-3 :Routing Configuration
+
+

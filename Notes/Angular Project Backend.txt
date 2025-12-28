@@ -1,0 +1,212 @@
+
+
+PART 6: Node.js + MongoDB Backend (Assignment Part b)
+
+PART 6.1: Initialize Node.js Project
+
+npm init -y
+
+PART 6.2: Install Express & Create the Server
+
+
+npm install express cors body-parser
+
+Create index.js: 
+
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+
+const app = express();
+const PORT = 3000;
+
+app.use(cors());
+app.use(bodyParser.json());
+
+app.get('/', (req, res) => {
+  res.send('Node server is running');
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+IN TERMINAL: 
+
+npm install --save-dev nodemon 
+
+IN package.json
+
+"scripts": {
+  "start": "node index.js",
+  "dev": "nodemon index.js"
+}
+
+
+
+PART 6.3: MongoDB Connection (Mongoose)
+
+Install Mongoose
+npm install mongoose
+
+Update index.js to Connect MongoDB Atlas:
+
+const mongoose = require('mongoose');
+
+// MongoDB Atlas connection
+mongoose.connect(
+  'mongodb+srv://<DB_USERNAME>:<DB_PASSWORD>@<CLUSTER_NAME>.mongodb.net/peopleDB'
+)
+.then(() => {
+  console.log('MongoDB Atlas connected successfully');
+})
+.catch((err) => {
+  console.log('MongoDB connection error:', err.message);
+});
+
+Notes:
+
+MongoDB Atlas is used instead of local MongoDB
+
+Database name: peopleDB
+
+<DB_USERNAME> and <DB_PASSWORD> are created in MongoDB Atlas
+
+Network access is enabled using 0.0.0.0/0
+
+Mongoose handles schema and database communication
+
+Run the Server again
+
+npm run dev
+
+Expected Output
+MongoDB Atlas connected successfully
+Server is running on port 3000
+
+
+
+PART 6.4: Create Person Schema (Mongoose Model)
+
+Create a Folder
+
+Inside MeanStackDevNodeTask, create a folder:
+
+models
+
+Create Model File
+
+Inside models, create a file:
+
+IN : Person.js
+
+IN : Person Schema (models/Person.js)
+
+
+const mongoose = require('mongoose');
+
+const PersonSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true
+  },
+  age: {
+    type: Number,
+    required: true
+  },
+  gender: {
+    type: String,
+    required: true
+  },
+  mobile: {
+    type: String,
+    required: true
+  }
+});
+
+module.exports = mongoose.model('Person', PersonSchema);
+
+Notes:
+
+PersonSchema defines the structure of the Person collection
+
+Fields used:
+Name, Age, Gender, Mobile number
+
+Mongoose automatically creates a collection named people
+
+This model will be used for CRUD operations
+
+Import Model in index.js
+
+Add this line at the top of index.js:
+
+const Person = require('./models/Person');
+
+
+PART 6.5: CRUD APIs (GET, POST, PUT, DELETE)
+
+
+//Fetching people
+app.get('/person', async(req,res)=>{
+    try {
+        const people=await Person.find();
+        res.json(people);
+    } catch (err) {
+        res.status(500).json({error:err.message});
+    }
+});
+
+//Create a Person
+
+app.post('/person',async(req,res)=>
+{
+    try {
+        const person=new Person({
+            name:req.body.name,
+            age:req.body.age,
+            gender:req.body.gender,
+            mobile:req.body.mobile
+        });
+        const savedPerson=await person.save();
+        res.json(savedPerson);
+    } catch (err) {
+        res.status(400).json({error:err.message});
+    }
+});
+
+//UPADATE a person
+app.put('/person/:id',async(req,res)=>
+{
+    try {
+        const updatedPerson=await Person.findByIdAndUpdate(
+            req.params.id,
+            {
+                name:req.body.name,
+                age:req.body.age,
+                gender:req.body.gender,
+                mobile:req.body.mobile
+            },
+            {new:true}
+        );
+        res.json(updatedPerson);
+    } catch (err) {
+        res.status(400).json({err:err.message});
+    }
+});
+
+//DELETE a person
+app.delete('/person/:id',async(req,res)=>
+{
+    try {
+        await Person.findByIdAndDelete(req.params.id);
+        res.json({message:'Person deleted Successfully'});
+    } catch (err) {
+        res.status(400).json({err:err.message});
+    }
+});
+
+SAVE AFTER REPLACING INTO THESE
+
+
+
